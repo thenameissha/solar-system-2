@@ -1,43 +1,39 @@
-name: Archive Unit Test Reports
-
 on:
+  workflow_dispatch:
   push:
-    branches: [ main ]
-  pull_request:
-
+    branches:
+      - main
+      - 'feature/*'
 
 jobs:
   unit-testing:
-    name: Run & Archive Mocha Tests
-    runs-on: ubuntu-latest
+    name: Unit Testing
+    strategy:
+      matrix:
+        nodejs_version: [18, 19, 20]
+        operating_system: [ubuntu-latest, macos-latest]
+      exclude:
+        - nodejs_version: 18
+          operating_system: macos-latest
 
-    env:  # 👈 Add environment variables here
-      MONGO_URI: mongodb://localhost:27017/testdb
+    runs-on: ${{ matrix.operating_system }}
+
+    env:
+      MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
+      MONGO_PASSWORD: ${{ vars.MONGO_PASSWORD }}
+      MONGO_URI: mongodb+srv://${{ vars.MONGO_USERNAME }}:${{ vars.MONGO_PASSWORD }}@supercluster.d83jj.mongodb.net/superData
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-   
-    
 
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ matrix.nodejs_version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-
+          node-version: ${{ matrix.nodejs_version }}
 
       - name: Install Dependencies
         run: npm install
 
-
-      - name: Run Unit Tests
+      - name: Run Tests
         run: npm test
-
-
-      - name: Archive Test Result
-        uses: actions/upload-artifact@v4
-        with:
-          name: Mocha-Test-Result
-          path: test-results.xml
-
-          
