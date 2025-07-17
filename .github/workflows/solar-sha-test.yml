@@ -10,10 +10,15 @@ jobs:
   unit-testing:
     name: Run & Archive Mocha Tests
     runs-on: ubuntu-latest
+
+    env:  # 👈 Add environment variables here
+      MONGO_URI: mongodb://localhost:27017/testdb
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
+   
+    
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
