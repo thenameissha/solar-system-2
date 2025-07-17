@@ -1,6 +1,5 @@
 name: Archive Unit Test Reports
 
-
 on:
   push:
     branches: [ main ]
@@ -31,7 +30,7 @@ jobs:
 
 
       - name: Archive Test Result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Mocha-Test-Result
           path: test-results.xml
